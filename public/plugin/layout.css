@@ -1,0 +1,33 @@
+.showLayout{
+    transform: translateX(-256px);
+    transition: .5s;
+}
+
+.showContentLayout{
+    margin-left: 0px!important;
+    transition: .5s;
+}
+
+.layoutMain{
+    transition: .5s;
+}
+
+.btnLayout{
+    transform: translateX(0);
+    transition: .5s;
+}
+
+.contentLayout{
+    width: calc(100% - 16rem);
+    margin-left: 16rem;
+    transition: .5s;
+}
+
+@media (max-width: 768px) {  
+    .contentLayout{
+        margin-left: 0px;
+        transition: .5s;
+    }
+
+    
+}
