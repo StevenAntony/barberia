@@ -1,6 +1,6 @@
 {
-    "name": "pwa name",
-    "short_name": "pwa shortname",
+    "name": "Barberia",
+    "short_name": "Barberia",
     "description": "desc",
     "icons": [
       {
@@ -11,6 +11,6 @@
     ],
     "start_url": "/",
     "display": "fullscreen",
-    "theme_color": "#764ABC",
-    "background_color": "#764ABC"
+    "theme_color": "#2962FF",
+    "background_color": "#2962FF"
   }

@@ -1,4 +1,3 @@
-
 var table
 var elementEditar = null
 var filaEditar = null
@@ -94,6 +93,9 @@ $(document).on('click','.cambiarEstado',function () {
         data: {itmEstado:table.row(tr).data().Estado},
         success: function (response) {
             table.row(filaEditar).data(response.data).draw()
+            $(filaEditar).removeClass('tdInhabilitado')
+            if (response.data.Estado == 'Inhabilitado')
+                $(filaEditar).addClass('tdInhabilitado')
         },
         beforeSend:function () {  
             console.log('cargando...');
@@ -121,31 +123,18 @@ $(document).on("click", ".details-control", function () {
       row.child.hide();
       tr.removeClass("shown");
     } else {
-      row.child(format(row.data())).show();
+      row.child(formatRow(row.data())).show();
       tr.addClass("shown");
     }
 });
 
-function format(d) {
-    // `d` is the original data object for the row
-    return (
-      '<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-      "<tr>" +
-      "<td>Full name:</td>" +
-      "<td>" +
-      "</td>" +
-      "</tr>" +
-      "<tr>" +
-      "<td>Extension number:</td>" +
-      "<td>" +
-      "</td>" +
-      "</tr>" +
-      "<tr>" +
-      "<td>Extra info:</td>" +
-      "<td>And any further details here (images etc)...</td>" +
-      "</tr>" +
-      "</table>"
-    );
+const formatRow = (row) => {
+    return (`<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+                <tr><td>Documento</td><td>${row.Documento}</td></tr>
+                <tr><td>Nombre</td><td>${row.Nombre} ${row.Apellido}</td></tr>
+                <tr><td>Edad</td><td>${row.Nacimiento != '' ? edad(row.Nacimiento) : '--'}</td></tr>
+                <tr><td>Estado</td><td><span class='badge ${row.Estado == 'Habilitado' ? 'bg-success':'bg-danger'} '>${row.Estado}</span></td></tr>
+            </table>`);
 }
 
 $(document).ready(function () {
@@ -169,6 +158,11 @@ $(document).ready(function () {
                 return []
             }
         },
+        createdRow: function( row, data, dataIndex ) {
+            if (data.Estado == 'Inhabilitado')                 
+                $(row).addClass('tdInhabilitado')
+
+        },
         columnDefs: [
             {title: "",targets: [ 0 ],visible: true},
             {title: "#",targets: [ 1 ],visible: false},
@@ -190,17 +184,19 @@ $(document).ready(function () {
                 }
             },
             {className:'text-center hide-xs',orderable:false,data:'Documento',defaultContent: ''},
-            {className:'text-center',orderable:false,data:'Nombre',defaultContent: ''},
+            {className:'text-center',orderable:false,data:'Nombre',defaultContent: '',
+                render: function (data, type, row) {  
+                    return `${row.Nombre} ${row.Apellido}`
+                }
+            },
             {className:'text-center hide-xs',orderable:false,data:'Nacimiento',defaultContent: '',
                 render : function (data,type,row) {  
-                    return `${row.Nacimiento != '' ? edad(row.Nacimiento) : ''}`
+                    return `${row.Nacimiento != '' ? edad(row.Nacimiento) : '--'}`
                 }
             },
             {className:'text-center hide-xs',orderable:false,data:'Estado',defaultContent: '',
-                render: function (data, type, row) {  
-                    return `${row.Estado == 'Habilitado' 
-                                            ? `<span class="badge bg-success">${row.Estado}</span>` 
-                                            : `<span class="badge bg-danger">${row.Estado}</span>`}`
+                render: function (data, type, row, index) { 
+                    return `<span class='badge ${row.Estado == 'Habilitado' ? 'bg-success':'bg-danger'} '>${row.Estado}</span>`
                 }
             },
             {className:'text-center',orderable:false,data:'Estado',defaultContent: '',
@@ -211,7 +207,7 @@ $(document).ready(function () {
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item editarInfo"  href="javascript:void(0)"><i class="fa fa-edit"></i> Editar</a>
-                                    <a class="dropdown-item cambiarEstado"  href="javascript:void(0)"><i class="fas fa-undo"></i> ${row.Estado == 'Habilitado' ? 'Habilitar' : 'Inhabilitar' }</a>
+                                    <a class="dropdown-item cambiarEstado"  href="javascript:void(0)"><i class="fas fa-undo"></i> ${row.Estado == 'Habilitado' ? 'Inhabilitar' : 'Habilitar' }</a>
                                 </div>
                             </div>`;
                 }
