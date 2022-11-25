@@ -46,6 +46,55 @@ router.post('/create',async (req, res) => {
     }
 })
 
+router.put('/update/:id',async (req, res) => {
+    const response = new Response();
+    const id = req.params.id;
+    const body = {
+        Nombre:req.body.itmNombre,
+        Apellido:req.body.itmApellido,
+        Nacimiento:req.body.itmNacimiento,
+        Documento:req.body.itmDocumento,
+        Updated:Date.now()
+    };
+    try {        
+        const clienteDB = await Cliente.findByIdAndUpdate(
+            id, body, { returnDocument: 'after' }
+        )
+
+        response.setData(clienteDB);
+        response.setSuccess(true);
+        res.json(response.result)
+    } catch (error) {
+        response.setData([]);
+        response.setError(error,500,'INTERNAL_ERROR');
+        response.setSuccess(false);
+        res.json(response.result)
+    }
+})
+
+
+router.put('/estado/:id',async (req, res) => {
+    const response = new Response();
+    const id = req.params.id;
+    const body = {
+        Estado : req.body.itmEstado == 'Habilitado' ? 'Inhabilitado' : 'Habilitado',
+        Updated:Date.now()
+    };
+    try {        
+        const clienteDB = await Cliente.findByIdAndUpdate(
+            id, body, { returnDocument: 'after' }
+        )
+
+        response.setData(clienteDB);
+        response.setSuccess(true);
+        res.json(response.result)
+    } catch (error) {
+        response.setData([]);
+        response.setError(error,500,'INTERNAL_ERROR');
+        response.setSuccess(false);
+        res.json(response.result)
+    }
+})
 
 function isAuthenticated(req, res, next) {
     if(req.isAuthenticated()) {

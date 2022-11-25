@@ -32,9 +32,13 @@ app.use(session({
     cookie: { maxAge: 60000000,_expires : 60000000 }
 }));
 
+
 // Conexión a Base de datos
 // ${process.env.USER_DB}:${process.env.PASSWORD_DB}@
-const url = `mongodb://${process.env.SERVE_DB}/${process.env.NAME_DB}?retryWrites=true&w=majority`;
+
+const url = process.env.APP_ENV == 'local' 
+                ? `mongodb://${process.env.SERVE_DB}/${process.env.NAME_DB}?retryWrites=true&w=majority`
+                : `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD_DB}@${process.env.NAME_DB}.rldp8ft.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true })
         .then(() => console.log('Base de datos conectada'))
         .catch(e => console.log('error db:', e))
