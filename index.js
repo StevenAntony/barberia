@@ -38,7 +38,7 @@ app.use(session({
 
 const url = process.env.APP_ENV == 'local' 
                 ? `mongodb://${process.env.SERVE_DB}/${process.env.NAME_DB}?retryWrites=true&w=majority`
-                : `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD_DB}@${process.env.NAME_DB}.rldp8ft.mongodb.net/?retryWrites=true&w=majority`;
+                : `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD_DB}@cluster0.rldp8ft.mongodb.net/${process.env.NAME_DB}?retryWrites=true&w=majority`;
 mongoose.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true })
         .then(() => console.log('Base de datos conectada'))
         .catch(e => console.log('error db:', e))
