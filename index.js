@@ -57,6 +57,8 @@ app.use((req, res, next) => {
 // import ruta
 app.use(cors({origin: '*'}));
 app.use('/cliente', require('./routes/cliente'));
+app.use('/atencion', require('./routes/atencion'));
+app.use('/caja', require('./routes/caja'));
 app.use('/corte', require('./routes/corte'));
 app.use('/auth', require('./routes/auth'));
 
