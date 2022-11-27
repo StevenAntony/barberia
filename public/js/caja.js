@@ -1,10 +1,15 @@
 var table
 var elementEditar = null
 var filaEditar = null
-var accion = 'Nuevo'
 const idFormEnviar = $('#formEnviar')
 const btnEnviarForm = $('.btnEnviarForm')
 const btnAperturarModal = $('.btnAperturarModal')
+
+var moneda = {
+    B200: 0, B100:0, B50:0, B20:0, B10:0,
+    S5:0, S2: 0, S1:0, C50:0, C20:0, C10:0
+}
+
 
 /**
  * 
@@ -13,9 +18,9 @@ const btnAperturarModal = $('.btnAperturarModal')
  */
 btnEnviarForm.click(function () {  
     $.ajax({
-        type: accion == 'Nuevo' ? idFormEnviar.attr('method') : 'put',
+        type: idFormEnviar.attr('method') ,
         dataType: "json",
-        url: accion == 'Nuevo' ? idFormEnviar.attr('action') : `/cliente/update/${elementEditar._id}`,
+        url: idFormEnviar.attr('action'),
         data: idFormEnviar.serialize(),
         success: function (response) {
             console.log(response); 
@@ -25,14 +30,12 @@ btnEnviarForm.click(function () {
                 timer: 1000,   
                 showConfirmButton: false 
             });
-            if (accion == 'Nuevo') {
-                table.rows.add( [ response.data] )
-                .draw();
-            }else{
-                table.row(filaEditar).data(response.data).draw()
-            }
+            // table.rows.add( [ response.data] )
+            // .draw();
             
             $('.modalForm').modal('hide')
+            
+            location.reload()
         },
         beforeSend:function () {  
             console.log('cargando...');
@@ -95,8 +98,54 @@ $(document).on('click','.cambiarEstado',function () {
  * 
  */
 btnAperturarModal.click(function () {  
-    idFormEnviar[0].reset()
-    accion = 'Nuevo'
+    let verificar = verificarAperturada()
+    
+    if (verificar != null) {
+        Swal.fire({
+            title: "Caja Aperturada",
+            text: "Se encontro una caja aperturada, si continua y apertura, la caja actual se cerrara.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Continuar",
+            closeOnConfirm: false,
+        }).then((result) => {
+            if (result.value) {         
+                $('.modalForm').modal({backdrop: 'static', keyboard: false})
+            }
+        })
+    }else{
+        $('.modalForm').modal({backdrop: 'static', keyboard: false})
+    }
+})
+
+/**
+ * 
+ * Verificar si hay caja aperturada
+ * 
+ */
+const verificarAperturada =async () => {
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json"
+       }
+    
+    let response = await fetch("/caja/verificar", { 
+        method: "POST",
+        headers: headersList
+    });
+  
+  let data = await response.json();
+  return data.data
+}
+
+const consultarArqueo = async () => {
+    
+}
+
+$(document).on('click','.arqueoCaja',function () {  
+    var tr = $(this).closest("tr");
+    var filaEditar = table.row(tr);
+
 })
 
 $(document).on("click", ".details-control", function () {
@@ -166,7 +215,7 @@ $(document).ready(function () {
             {className:'text-center hide-xs',orderable:false,data:'Cierre',defaultContent: '',
                 render: function (data, type, row, index) { 
                     let date = moment(row.Cierre).format('DD/MM/YYYY h:mm a') 
-                    return date == 'Invalid date' ? '--' : date
+                    return date == 'Invalid date' || row.Cierre == undefined ? '--' : date
                 }
             },
             {className:'text-center hide-xs',orderable:false,data:'Usuario.Nombre',defaultContent: ''},
@@ -187,8 +236,8 @@ $(document).ready(function () {
                                     Acción
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item cerrarCaja"  href="javascript:void(0)"><i class="mdi mdi-archive"></i> Cerrar Caja</a>
-                                    <a class="dropdown-item ArqueoCaja"  href="javascript:void(0)"><i class="mdi mdi-chart-areaspline"></i> Arqueo Caja</a>
+                                    ${row.Estado == 'Aperturado' ? '<a class="dropdown-item cerrarCaja"  href="javascript:void(0)"><i class="mdi mdi-archive"></i> Cerrar Caja</a>' : ''} 
+                                    <a class="dropdown-item arqueoCaja"  href="javascript:void(0)"><i class="mdi mdi-chart-areaspline"></i> Arqueo Caja</a>
                                     <a class="dropdown-item detalleCaja"  href="javascript:void(0)"><i class="mdi mdi-clipboard-text"></i> Detalle</a>
                                     
                                 </div>
@@ -201,3 +250,4 @@ $(document).ready(function () {
         }
       });
 });
+
