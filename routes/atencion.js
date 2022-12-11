@@ -1,10 +1,12 @@
 const express = require('express');
 const Atencion = require('../models/Atencion');
+const Caja = require('../models/Caja');
 const Response = require('../core/Response');
 
 const router = express.Router();
 
 router.get('/',isAuthenticated, (req, res, next) => {
+
     res.render('mantenimiento/atencion',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
 });
 
@@ -26,18 +28,27 @@ router.post('/list',async (req, res) => {
 router.post('/create',async (req, res) => {
     const response = new Response();
     try {        
-        const clienteDB = new Atencion({
-            Nombre:req.body.itmNombre,
-            Apellido:req.body.itmApellido,
-            Nacimiento:req.body.itmNacimiento,
-            Documento:req.body.itmDocumento
+        // console.log(req.body);
+        const cajaDB = await Caja.findOne({ Estado: 'Aperturado' })
+        const atencionDB = new Atencion({
+            Cliente:req.body.itmCliente,
+            Corte:req.body.itmCorte,
+            Usuario:{
+                Nombre:req.user.Nombre,
+                Codigo:req.user._id,
+            },
+            Monto:req.body.itmMonto,
+            Adicional:req.body.itmAdicional,
+            Pago:req.body.itmPago,
+            Caja:cajaDB._id
           })
 
-        await clienteDB.save()
-        response.setData(clienteDB);
+        await atencionDB.save()
+        response.setData(atencionDB);
         response.setSuccess(true);
         res.json(response.result)
     } catch (error) {
+        console.log(error);
         response.setData([]);
         response.setError('Error Servidor',500,'INTERNAL_ERROR');
         response.setSuccess(false);

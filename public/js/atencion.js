@@ -1,0 +1,210 @@
+const btnEnviarForm = $('.btnEnviarForm ')
+var table = null
+var ClienteSelect = null
+
+/**
+ * Envio del formulario para la creacion de un nueva atencion mediante api 
+ * utilizando fetch
+ * @param {*} data - de tipo objeto
+ */
+const enviarFormulario = async (data) => {
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json"
+       }
+       
+    let bodyContent = JSON.stringify(data);
+       
+    let response = await fetch('/atencion/create', { 
+        method: "POST",
+        body: bodyContent,
+        headers: headersList
+    });
+    
+    let result = await response.json();
+    // console.log(result);
+    if (result.success) {
+        swal({   
+            title: "Formulario",   
+            text: "Fue enviado correctamente",   
+            timer: 1000,   
+            showConfirmButton: false 
+        });
+        $('.modalForm').modal('hide')
+    }else{
+        swal({   
+            title: "Upss",   
+            text: "Ocurrio un problema, intente nuevamente",   
+            icon:'info',
+            showConfirmButton: false 
+        });
+    }
+    // console.log(response); 
+    //         
+            
+    //         // location.reload()
+}
+
+btnEnviarForm.click(function () {  
+    enviarFormulario({
+        itmCliente : ClienteSelect,
+        itmCorte : $('#itmCorte :selected').text(),
+        itmMonto : $('#itmMonto').val() < 0 ? 0 : $('#itmMonto').val(),
+        itmAdicional: $('#itmAdicional').val(),
+        itmPago: $('#itmPago').val()
+    })
+})
+
+$('#itmCliente').on('select2:select', function (e) {
+        const data = e.params.data;
+        ClienteSelect = {
+            _id : data.id,
+            cliente: data.text 
+        }
+});
+
+/**
+ * Cargar los cortes mediante una api utilizando fetch
+ */
+const cargarCorte =async () => {
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json"
+       }
+
+    let response = await fetch("/corte/list", { 
+        method: "POST",
+        headers: headersList
+    });
+    
+    let data = await response.json();
+    let htmlRender = ''
+    data.data.forEach(element => {
+        htmlRender += `<option value="${element.Descripcion}">${element.Descripcion}</option>`
+    });   
+    $("#itmCorte").html(htmlRender)
+    $("#itmCorte").select2({
+        dropdownParent:$('.modalForm'),
+        language: "es"
+    });
+}
+
+$(document).ready(function () {
+    table = $("#dataTableInfo").DataTable({
+        // scrollY: "400px",
+        paging: true,
+        order: [[ 1, "desc" ]],
+        deferRender: true,
+        responsive: true,
+        pageLength: 10,
+        ordering: true,
+        info: true,
+        processing: false,
+        ajax: {
+            url: '/atencion/list',
+            type:'post',
+            dataSrc:  function(response) {        
+                if (response.success) {
+                    return response.data
+                }
+                return []
+            }
+        },
+        createdRow: function( row, data, dataIndex ) {
+            if (data.Estado == 'Anulado')                 
+                $(row).addClass('tdInhabilitado')
+        },
+        columnDefs: [
+            {title: "",targets: [ 0 ],visible: true},
+            {title: "#",targets: [ 1 ],visible: false},
+            {title: "Cliente",targets: [ 2 ],visible: true},
+            {title: "Servicio",targets: [ 3 ],visible: true},
+            {title: "Usuario",targets: [ 4 ],visible: true},
+            {title: "T.P",targets: [ 5 ],visible: true},
+            {title: "Monto",targets: [ 6 ],visible: true},
+            {title: "Estado",targets: [ 7 ],visible: true},
+            {title: "Opción",targets: [ 8 ],visible: true},
+        ],
+        columns: [
+            {width: "3%",className:'details-control',orderable:false,data:null,defaultContent: '',
+                render:function (data,type,row,index) {
+                    return `<button type="button" class="btn-info btn" style="font-size: 12px;padding: 2px 5px;"><i class="fa fa-plus"></i></button>`;
+                }
+            },
+            {width: "3%",className:'',orderable:true,data:null,defaultContent: '',
+                render:function (data,type,row,index) {
+                    return index.row;
+                }
+            },
+            {className:'text-center hide-xs',orderable:false,data:'Cliente.cliente',defaultContent: ''},
+            {className:'text-center hide-xs',orderable:false,data:'Corte',defaultContent: ''},
+            {className:'text-center hide-xs',orderable:false,data:'Usuario.Nombre',defaultContent: ''},
+            {className:'text-center hide-xs',orderable:false,data:'Pago',defaultContent: ''},
+            {className:'text-center hide-xs',orderable:false,data:'Monto',defaultContent: '',
+                render:function (data, type, row) {  
+                    return `${money(data)}`
+                }    
+            },
+            {className:'text-center hide-xs',orderable:false,data:'Estado',defaultContent: '',
+                render: function (data, type, row, index) { 
+                    return `<span class='badge ${row.Estado == 'Cobrado' ? 'bg-success':'bg-danger'} '>${row.Estado}</span>`
+                }
+            },
+            {className:'text-center',orderable:false,data:'Estado',defaultContent: '',
+                render: function (data, type, row) {  
+                    return `<div class="btn-group">
+                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Acción
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item editarInfo"  href="javascript:void(0)"><i class="fa fa-edit"></i> Editar</a>
+                                    <a class="dropdown-item cambiarEstado"  href="javascript:void(0)"><i class="fas fa-undo"></i> ${row.Estado == 'Cobrado' ? 'Anular' : 'Cobrado' }</a>
+                                </div>
+                            </div>`;
+                }
+            }
+        ],
+        language: {
+            url: 'assets/template/language.json'
+        }
+      });
+
+    
+    $("#itmCliente").select2({
+        placeholder: "Loading remote data",
+        ajax: {
+            url: "/cliente/buscar",
+            method:"post",
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    itmBuscar: params.term, // search term
+                };
+            },
+            processResults: function(data, params) {
+                var items = $.map(data.data, function (obj) {
+                                    obj.id =  obj._id;
+                                    obj.text = obj.Nombre + ' ' + obj.Apellido;
+        
+                                    return obj;
+                                });
+                return {
+                    results: items
+                };
+            },
+            cache: true
+        },
+        dropdownParent:$('.modalForm'),
+        minimumInputLength: 1,
+        language: "es"
+    });
+
+
+    $("#itmAdicional").select2({
+        tags: true,
+        language: "es"
+    });
+
+    cargarCorte()
+});

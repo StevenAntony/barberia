@@ -66,33 +66,6 @@ $(document).on('click','.editarInfo', function () {
 });
 
 /**
- * Cambiar estado 
- */
-$(document).on('click','.cambiarEstado',function () {  
-    let tr = $(this).closest("tr")
-    filaEditar = tr
-
-    $.ajax({
-        type: 'put',
-        dataType: "json",
-        url: `/cliente/estado/${table.row(tr).data()._id}`,
-        data: {itmEstado:table.row(tr).data().Estado},
-        success: function (response) {
-            table.row(filaEditar).data(response.data).draw()
-            $(filaEditar).removeClass('tdInhabilitado')
-            if (response.data.Estado == 'Inhabilitado')
-                $(filaEditar).addClass('tdInhabilitado')
-        },
-        beforeSend:function () {  
-            console.log('cargando...');
-        },
-        error:function (error) {  
-            console.error(error);
-        }
-    });
-})
-
-/**
  * 
  * Aperturar modal para poder registrar uno nuevo
  * 
@@ -175,7 +148,7 @@ $(document).ready(function () {
     table = $("#dataTableInfo").DataTable({
         // scrollY: "400px",
         paging: true,
-        order: [[ 1, "desc" ]],
+        order: [[ 4, "asc" ]],
         deferRender: true,
         responsive: true,
         pageLength: 10,

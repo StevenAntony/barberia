@@ -1,17 +1,17 @@
 const express = require('express');
-const Cliente = require('../models/Cliente');
+const Movimiento = require('../models/Movimiento');
 const Response = require('../core/Response');
 
 const router = express.Router();
 
 router.get('/',isAuthenticated, (req, res, next) => {
-    res.render('mantenimiento/cliente',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
+    res.render('mantenimiento/atencion',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
 });
 
 router.post('/list',async (req, res) => {
     const response = new Response();
     try {        
-        const arrayData = await Cliente.find();
+        const arrayData = await Atencion.find();
         response.setData(arrayData);
         response.setSuccess(true);
         res.json(response.result);
@@ -26,7 +26,7 @@ router.post('/list',async (req, res) => {
 router.post('/create',async (req, res) => {
     const response = new Response();
     try {        
-        const clienteDB = new Cliente({
+        const clienteDB = new Atencion({
             Nombre:req.body.itmNombre,
             Apellido:req.body.itmApellido,
             Nacimiento:req.body.itmNacimiento,
@@ -56,7 +56,7 @@ router.put('/update/:id',async (req, res) => {
         Updated:Date.now()
     };
     try {        
-        const clienteDB = await Cliente.findByIdAndUpdate(
+        const clienteDB = await Atencion.findByIdAndUpdate(
             id, body, { returnDocument: 'after' }
         )
 
@@ -70,7 +70,6 @@ router.put('/update/:id',async (req, res) => {
         res.json(response.result)
     }
 })
-
 
 router.put('/estado/:id',async (req, res) => {
     const response = new Response();
@@ -80,28 +79,9 @@ router.put('/estado/:id',async (req, res) => {
         Updated:Date.now()
     };
     try {        
-        const clienteDB = await Cliente.findByIdAndUpdate(
+        const clienteDB = await Atencion.findByIdAndUpdate(
             id, body, { returnDocument: 'after' }
         )
-
-        response.setData(clienteDB);
-        response.setSuccess(true);
-        res.json(response.result)
-    } catch (error) {
-        response.setData([]);
-        response.setError(error,500,'INTERNAL_ERROR');
-        response.setSuccess(false);
-        res.json(response.result)
-    }
-})
-
-router.post('/buscar',async (req, res) => {
-    const response = new Response();
-    try {        
-        const clienteDB = await Cliente.find({$or:[
-            {Nombre:{ $regex: '.*' + req.body.itmBuscar + '.*',$options:'i' }},
-            {Apellido:{ $regex: '.*' + req.body.itmBuscar + '.*',$options:'i' }}
-        ]})
 
         response.setData(clienteDB);
         response.setSuccess(true);
