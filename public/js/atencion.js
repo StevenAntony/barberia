@@ -1,6 +1,7 @@
 const btnEnviarForm = $('.btnEnviarForm ')
 var table = null
 var ClienteSelect = null
+var filaEditar = null
 
 /**
  * Envio del formulario para la creacion de un nueva atencion mediante api 
@@ -24,6 +25,8 @@ const enviarFormulario = async (data) => {
     let result = await response.json();
     // console.log(result);
     if (result.success) {
+        table.rows.add( [ result.data] )
+                .draw();
         swal({   
             title: "Formulario",   
             text: "Fue enviado correctamente",   
@@ -157,7 +160,6 @@ $(document).ready(function () {
                                     Acción
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item editarInfo"  href="javascript:void(0)"><i class="fa fa-edit"></i> Editar</a>
                                     <a class="dropdown-item cambiarEstado"  href="javascript:void(0)"><i class="fas fa-undo"></i> ${row.Estado == 'Cobrado' ? 'Anular' : 'Cobrado' }</a>
                                 </div>
                             </div>`;
@@ -208,3 +210,58 @@ $(document).ready(function () {
 
     cargarCorte()
 });
+
+$(document).on("click", ".details-control", function () {
+    let tr = $(this).closest("tr");
+    let row = table.row(tr);
+    let td = $(this).closest('td');
+    if (row.child.isShown()) {
+      row.child.hide();
+      td.html(`<button type="button" class="btn-info btn" style="font-size: 12px;padding: 2px 5px;"><i class="fa fa-plus"></i></button>`)
+      tr.removeClass("shown");
+    } else {
+      row.child(formatRow(row.data())).show();
+      tr.addClass("shown");
+      td.html(`<button type="button" class="btn-danger btn" style="font-size: 12px;padding: 2px 5px;"><i class="fa fa-minus"></i></button>`)
+                
+    }
+});
+
+const formatRow = (row) => {
+    return (`<table class="table" cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">
+                <tr><td>Cliente</td><td>${row.Cliente.cliente}</td></tr>
+                <tr><td>Servicio</td><td>${row.Corte}</td></tr>
+                <tr><td>Usuario</td><td>${row.Usuario.Nombre}</td></tr>
+                <tr><td>T.P</td><td>${row.Pago}</td></tr>
+                <tr><td>Monto</td><td>${money(row.Monto)}</td></tr>
+                <tr><td>Estado</td><td><span class='badge ${row.Estado == 'Cobrado' ? 'bg-success':'bg-danger'} '>${row.Estado}</span></td></tr>
+                
+            </table>`);
+}
+
+/**
+ * Cambiar estado 
+ */
+$(document).on('click','.cambiarEstado',function () {  
+    let tr = $(this).closest("tr")
+    filaEditar = tr
+
+    $.ajax({
+        type: 'put',
+        dataType: "json",
+        url: `/atencion/estado/${table.row(tr).data()._id}`,
+        data: {itmEstado:table.row(tr).data().Estado},
+        success: function (response) {
+            table.row(filaEditar).data(response.data).draw()
+            $(filaEditar).removeClass('tdInhabilitado')
+            if (response.data.Estado == 'Anulado')
+                $(filaEditar).addClass('tdInhabilitado')
+        },
+        beforeSend:function () {  
+            console.log('cargando...');
+        },
+        error:function (error) {  
+            console.error(error);
+        }
+    });
+})
