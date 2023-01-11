@@ -118,7 +118,8 @@ const consultarArqueo = async () => {
 $(document).on('click','.arqueoCaja',function () {  
     var tr = $(this).closest("tr");
     var filaEditar = table.row(tr);
-
+    $('.modalArqueoCaja input').val('0')
+    $('.modalArqueoCaja').modal({backdrop: 'static', keyboard: false})
 })
 
 $(document).on("click", ".details-control", function () {
