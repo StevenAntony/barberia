@@ -1,18 +1,18 @@
 const express = require('express');
-const Corte = require('../models/Corte');
+const Usuario = require('../models/User');
 const Response = require('../core/Response');
 
 const router = express.Router();
 
 router.get('/',isAuthenticated , (req, res) => {
-    res.render('mantenimiento/corte',{ nameApp: process.env.NAME_APP,userAuth:req.user });
+    res.render('mantenimiento/usuario',{ nameApp: process.env.NAME_APP,userAuth:req.user });
 })
 
 router.post('/list',async (req, res) => {
     const response = new Response();
     try {        
-        const arrayCorte = await Corte.find();
-        response.setData(arrayCorte);
+        const list = await Usuario.find();
+        response.setData(list);
         response.setSuccess(true);
         res.json(response.result);
     } catch (error) {
@@ -27,14 +27,16 @@ router.post('/list',async (req, res) => {
 router.post('/create',async (req, res) => {
     const response = new Response();
     try {
-        const corteDB = new Corte({
-            Descripcion: req.body.Descripcion,
-            Monto: req.body.Monto,
-            Imagen: req.body.Imagen,
-            Estado: "Activo"
+        const newObjeto = new Usuario({
+            Nombre: req.body.itmNombre,
+            Email: req.body.itmEmail,
+            Password: (new Usuario).encryptPassword(req.body.itmPassword),
+            Estado: "Habilitado",
+            Rol:req.body.itmRol,
+            Usuario: req.body.itmUsuario
           })
-        await corteDB.save()
-        response.setData(corteDB);
+        await newObjeto.save()
+        response.setData(newObjeto);
         response.setSuccess(true);
         res.json(response.result);
     } catch (error) {
@@ -49,17 +51,20 @@ router.put('/update/:id',async (req, res) => {
     const response = new Response();
     const id = req.params.id;
     const body = {
-        Descripcion: req.body.Descripcion,
-        Monto: req.body.Monto,
-        Imagen: req.body.Imagen
+        Nombre: req.body.itmNombre,
+        Email: req.body.itmEmail,
+        Password: (new Usuario).encryptPassword(req.body.itmPassword),
+        Rol:req.body.itmRol,
+        Usuario: req.body.itmUsuario,
+        Updated:Date.now()
     };
     try {
 
-        const corteDB = await Corte.findByIdAndUpdate(
+        const updateObjeto = await Usuario.findByIdAndUpdate(
             id, body, { returnDocument: 'after' }
         );
         
-        response.setData(corteDB);
+        response.setData(updateObjeto);
         response.setSuccess(true);
         res.json(response.result);
     } catch (error) {
@@ -74,14 +79,14 @@ router.put('/estado/:id',async (req, res) => {
     const response = new Response();
     const id = req.params.id;
     const body = {
-        Estado : req.body.itmEstado == 'Activo' ? 'Inhabilitado' : 'Activo'
+        Estado : req.body.itmEstado == 'Habilitado' ? 'Inhabilitado' : 'Habilitado'
     };
     try {        
-        const corteDB = await Corte.findByIdAndUpdate(
+        const estadoObjeto = await Usuario.findByIdAndUpdate(
             id, body, { returnDocument: 'after' }
         )
 
-        response.setData(corteDB);
+        response.setData(estadoObjeto);
         response.setSuccess(true);
         res.json(response.result)
     } catch (error) {

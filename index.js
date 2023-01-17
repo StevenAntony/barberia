@@ -60,10 +60,11 @@ app.use('/cliente', require('./routes/cliente'));
 app.use('/atencion', require('./routes/atencion'));
 app.use('/caja', require('./routes/caja'));
 app.use('/corte', require('./routes/corte'));
+app.use('/usuario', require('./routes/usuario'));
 app.use('/auth', require('./routes/auth'));
 
 app.get('/', (req, res) => {
-    // console.log(req.query.login);
+    console.log(process.env.APP_ENV);
     // res.render("login", { nameApp: process.env.NAME_APP });
     res.redirect('/auth/signin');
 });
@@ -83,5 +84,6 @@ function isAuthenticated(req, res, next) {
 // iniciar server
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
+    console.log(process.env.APP_ENV);
     console.log(`servidor andando en: ${PORT}`)
 })

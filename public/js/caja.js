@@ -10,6 +10,15 @@ var moneda = {
     S5:0, S2: 0, S1:0, C50:0, C20:0, C10:0
 }
 
+/**
+ * 
+ * Aperturar modal para poder registrar uno nuevo
+ * 
+ */
+btnAperturarModal.click(function () {  
+    verificarAperturada()
+})
+
 
 /**
  * 
@@ -46,50 +55,6 @@ btnEnviarForm.click(function () {
     });
 });
 
-/**
- * 
- * Adaptar el formulario para editar
- * 
- */
-$(document).on('click','.editarInfo', function () {
-    let key = $(this).data().key
-    let tr = $(this).closest("tr")
-    filaEditar = tr
-    elementEditar = table.row(tr).data()
-
-    $('input[name="itmDocumento"]').val(elementEditar.Documento)
-    $('input[name="itmNombre"]').val(elementEditar.Nombre)
-    $('input[name="itmApellido"]').val(elementEditar.Apellido)
-    $('input[name="itmNacimiento"]').val(elementEditar.Nacimiento)
-    accion = 'Editar'
-    $('.modalForm').modal('show')
-});
-
-/**
- * 
- * Aperturar modal para poder registrar uno nuevo
- * 
- */
-btnAperturarModal.click(function () {  
-    let verificar = verificarAperturada()
-    
-    if (verificar != null) {
-        Swal.fire({
-            title: "Caja Aperturada",
-            text: "Se encontro una caja aperturada, si continua y apertura, la caja actual se cerrara.",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Continuar",
-            closeOnConfirm: false,
-        }).then((result) => {
-            if (result.value) {         
-                $('.modalForm').modal({backdrop: 'static', keyboard: false})
-            }
-        })
-    }else{
-        $('.modalForm').modal({backdrop: 'static', keyboard: false})
-    }
-})
 
 /**
  * 
@@ -107,12 +72,95 @@ const verificarAperturada =async () => {
         headers: headersList
     });
   
-  let data = await response.json();
-  return data.data
+    let data = await response.json();
+    if (data.data != null) {
+        Swal.fire({
+            title: "Caja Aperturada",
+            text: "Se encontro una caja aperturada, si continua y apertura, la caja actual se cerrara.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Continuar",
+            closeOnConfirm: false,
+        }).then((result) => {
+            if (result.value) {         
+                $('.modalForm').modal({backdrop: 'static', keyboard: false})
+            }
+        })
+    }else{
+        $('.modalForm').modal({backdrop: 'static', keyboard: false})
+    }
 }
 
-const consultarArqueo = async () => {
+const cerrarCaja = async (id) => {
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json"
+       }
     
+    let response = await fetch(`/caja/cierre/${id}`, { 
+        method: "PUT",
+        headers: headersList
+    });
+  
+    let data = await response.json();
+    if (data.success) {
+        location.reload();
+    }else{
+        Swal.fire({
+            title: "Server Error",
+            text: data.error.message,
+            type: "warning",
+            showCancelButton: false,
+            confirmButtonText: "Ok",
+            closeOnConfirm: false,
+        })
+    }
+}
+
+const detalleCaja = async (id) => {
+    let headersList = {
+        "Accept": "*/*",
+        "Content-Type": "application/json"
+       }
+    
+    let response = await fetch(`/caja/detallecaja/${id}`, { 
+        method: "POST",
+        headers: headersList
+    });
+  
+    let data = await response.json();
+    if (data.success) {
+        console.log(data); 
+        let htmlBuild = '';
+        let object = data.data;
+        for (const key in object) {
+            if (Object.hasOwnProperty.call(object, key)) {
+                const element = object[key];
+                let htmlElement = '';
+                element.forEach(obj => {
+                    htmlElement += `<div class="d-flex justify-content-between">
+                                        <div class="py-1">${obj._id}</div>
+                                        <div class="py-1">${money(obj.Total)}</div>    
+                                    </div>`;
+                });
+                htmlBuild +=    `<div class="">
+                                    <div><b class="text-uppercase text-info">${key}</b></div>
+                                    <div class="p-2 bg-info text-white">${htmlElement}</div>
+                                </div>`;  
+            }
+        }
+        $('.render-detalleCaja').html(htmlBuild);
+        $('.modal-detalle-caja').modal({backdrop: 'static', keyboard: false})
+    }else{
+        Swal.fire({
+            title: "Server Error",
+            text: data.error.message,
+            type: "warning",
+            showCancelButton: false,
+            confirmButtonText: "Ok",
+            closeOnConfirm: false,
+        })
+    }
 }
 
 $(document).on('click','.arqueoCaja',function () {  
@@ -120,6 +168,32 @@ $(document).on('click','.arqueoCaja',function () {
     var filaEditar = table.row(tr);
     $('.modalArqueoCaja input').val('0')
     $('.modalArqueoCaja').modal({backdrop: 'static', keyboard: false})
+})
+
+$(document).on('click','.cerrarCaja',function () {  
+    let tr = $(this).closest("tr");
+    var filaEditar = table.row(tr);
+    console.log(filaEditar.data());
+
+    Swal.fire({
+        title: "Cierre de Caja",
+        text: "Esta seguro en cerrar la caja, el proceso no prodra revertirse.",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Continuar",
+        closeOnConfirm: false,
+    }).then((result) => {
+        if (result.value) {         
+            cerrarCaja(filaEditar.data()._id);
+        }
+    })
+})
+
+$(document).on('click','.this-detalleCaja',function () {  
+    var tr = $(this).closest("tr");
+    var filaEditar = table.row(tr);
+    $('#cajaDetalle').html(moment(filaEditar.data().Apertura).format('DD/MM/YYYY h:mm a'));
+    detalleCaja(filaEditar.data()._id);
 })
 
 $(document).on("click", ".details-control", function () {
@@ -149,7 +223,7 @@ $(document).ready(function () {
     table = $("#dataTableInfo").DataTable({
         // scrollY: "400px",
         paging: true,
-        order: [[ 4, "asc" ]],
+        order: [[ 1, "desc" ]],
         deferRender: true,
         responsive: true,
         pageLength: 10,
@@ -172,7 +246,7 @@ $(document).ready(function () {
             {title: "Cierre",targets: [ 2 ],visible: true},
             {title: "Usuario",targets: [ 3 ],visible: true},
             {title: "Estado",targets: [ 4 ],visible: true},
-            {title: "Total",targets: [ 5 ],visible: true},
+            {title: "Inicial",targets: [ 5 ],visible: true},
             {title: "Opción",targets: [ 6 ],visible: true},
         ],
         columns: [
@@ -211,11 +285,10 @@ $(document).ready(function () {
                                 </button>
                                 <div class="dropdown-menu">
                                     ${row.Estado == 'Aperturado' ? '<a class="dropdown-item cerrarCaja"  href="javascript:void(0)"><i class="mdi mdi-archive"></i> Cerrar Caja</a>' : ''} 
-                                    <a class="dropdown-item arqueoCaja"  href="javascript:void(0)"><i class="mdi mdi-chart-areaspline"></i> Arqueo Caja</a>
-                                    <a class="dropdown-item detalleCaja"  href="javascript:void(0)"><i class="mdi mdi-clipboard-text"></i> Detalle</a>
-                                    
+                                    <a class="dropdown-item this-detalleCaja" href="javascript:void(0)"><i class="mdi mdi-clipboard-text"></i> Detalle</a>
                                 </div>
                             </div>`;
+                    // <a class="dropdown-item arqueoCaja"  href="javascript:void(0)"><i class="mdi mdi-chart-areaspline"></i> Arqueo Caja</a>
                 }
             }
         ],

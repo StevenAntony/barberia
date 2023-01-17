@@ -6,7 +6,8 @@ const cajaSchema = mongoose.Schema({
     Usuario:{type:Object,required:true},
     Estado:{type: String,default: 'Aperturado'},
     Total:{type: Number},
-    Monto:{type:Number}
+    Monto:{type:Number},
+    // Arqueo:{type:Object}
 }, { collection: 'caja' })
 
 module.exports = mongoose.model('caja', cajaSchema);

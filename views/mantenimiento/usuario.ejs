@@ -1,14 +1,14 @@
-<%- include('../template/header', {tituloweb: 'Cliente'}); %>
+<%- include('../template/header', {tituloweb: 'Usuario'}); %>
 
     <div class="page-breadcrumb">
         <div class="row">
             <div class="col-5 align-self-center">
-                <h4 class="page-title">Cliente</h4>
+                <h4 class="page-title">Usuario</h4>
                 <div class="d-flex align-items-center">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Cliente</li>
+                            <li class="breadcrumb-item active" aria-current="page">Usuario</li>
                         </ol>
                     </nav>
                 </div>
@@ -35,44 +35,46 @@
         </div>
     </div>
     <div class="modal fade modalForm" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-md">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myLargeModalLabel"><i class="fa fa-address-book"></i> Cliente</h4>
+                    <h4 class="modal-title" id="myLargeModalLabel"><i class="fa fa-user"></i> Usuario</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 </div>
                 <div class="modal-body">
-                    <form novalidate action="/cliente/create" method="post" id="formEnviar">
+                    <form novalidate action="/usuario/create" method="post" id="formEnviar">
                         <div class="d-flex flex-wrap">
                             <div class="form-group col-sm-6 col-12">
-                                <h5>Documento</h5>
+                                <h5>Nombre</h5>
                                 <div class="controls">
-                                    <input type="number" name="itmDocumento" autocomplete="off" class="form-control"> 
+                                    <input type="text" name="itmNombre" autocomplete="off" class="form-control"> 
                                 </div>
                             </div>
                             <div class="form-group col-sm-6 col-12">
-                                <h5>Nombre <span class="text-danger">*</span></h5>
+                                <h5>Email</h5>
                                 <div class="controls">
-                                    <input type="text" name="itmNombre" class="form-control" autocomplete="off" required data-validation-required-message="El campo es obligatorio"> 
+                                    <input type="email" name="itmEmail" autocomplete="off" class="form-control"> 
                                 </div>
                             </div>
-                            <div class="form-group col-sm-6 col-12">
-                                <h5>Apellido <span class="text-danger">*</span></h5>
+                            <div class="form-group col-sm-3 col-12">
+                                <h5>Rol <span class="text-danger">*</span></h5>
                                 <div class="controls">
-                                    <input type="text" name="itmApellido" autocomplete="off" class="form-control" required data-validation-required-message="El campo es obligatorio"> 
+                                    <select name="itmRol" class="form-control" id="itmRol">
+                                        <option value="Admin">Administrador</option>
+                                        <option value="Trabajador">Trabajador</option>
+                                    </select>
                                 </div>
                             </div>
-                            <div class="form-group col-sm-6 col-12">
-                                <h5>Nacimiento</h5>
+                            <div class="form-group col-sm-4 col-12">
+                                <h5>Usuario</h5>
                                 <div class="controls">
-                                    <input type="date" name="itmNacimiento" autocomplete="off" class="form-control"> 
+                                    <input type="text" name="itmUsuario" autocomplete="off" class="form-control"> 
                                 </div>
                             </div>
-                            
-                            <div class="form-group col-sm-6 col-12 hide">
-                                <h5>Foto </h5>
+                            <div class="form-group col-sm-5 col-12">
+                                <h5>Password</h5>
                                 <div class="controls">
-                                    <input type="file" name="file" class="form-control" required> 
+                                    <input type="text" name="itmPassword" autocomplete="off" class="form-control"> 
                                 </div>
                             </div>
                         </div>
@@ -85,5 +87,5 @@
             </div>
         </div>
     </div>
-<script async src="/assets/js/cliente.js"></script>
+<script async src="/assets/js/usuario.js"></script>
 <%- include('../template/footer'); %>

@@ -37,7 +37,7 @@ const enviarFormulario = async (data) => {
     }else{
         swal({   
             title: "Upss",   
-            text: "Ocurrio un problema, intente nuevamente",   
+            text: result.error.message,   
             icon:'info',
             showConfirmButton: false 
         });

@@ -30,23 +30,29 @@ router.post('/create',async (req, res) => {
     try {        
         // console.log(req.body);
         const cajaDB = await Caja.findOne({ Estado: 'Aperturado' })
-        const atencionDB = new Atencion({
-            Cliente:req.body.itmCliente,
-            Corte:req.body.itmCorte,
-            Usuario:{
-                Nombre:req.user.Nombre,
-                Codigo:req.user._id,
-            },
-            Monto:req.body.itmMonto,
-            Adicional:req.body.itmAdicional,
-            Pago:req.body.itmPago,
-            Caja:cajaDB._id
-          })
-
-        await atencionDB.save()
-        response.setData(atencionDB);
-        response.setSuccess(true);
-        res.json(response.result)
+        if (cajaDB != null) {
+            const atencionDB = new Atencion({
+                Cliente:req.body.itmCliente,
+                Corte:req.body.itmCorte,
+                Usuario:{
+                    Nombre:req.user.Nombre,
+                    Codigo:req.user._id,
+                },
+                Monto:req.body.itmMonto,
+                Adicional:req.body.itmAdicional,
+                Pago:req.body.itmPago,
+                Caja:cajaDB._id
+              })
+    
+            await atencionDB.save()
+            response.setData(atencionDB);
+            response.setSuccess(true);
+            res.json(response.result)
+        }else{
+            response.setError('Caja no Aperturada',500,'INTERNAL_ERROR');
+            response.setSuccess(false);
+            res.json(response.result)
+        }
     } catch (error) {
         console.log(error);
         response.setData([]);
