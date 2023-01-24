@@ -182,8 +182,8 @@ $(document).ready(function () {
                     return index.row;
                 }
             },
-            {className:'text-center hide-xs',orderable:false,data:'Descripcion',defaultContent: ''},
-            {className:'text-center',orderable:false,data:'Imagen',defaultContent: '',
+            {className:'text-center ',orderable:false,data:'Descripcion',defaultContent: ''},
+            {className:'text-center hide-xs',orderable:false,data:'Imagen',defaultContent: '',
                 render: function (data, type, row) {  
                     return `<a href="${data}" target="black" class="btn btn-info"><i class="fa fa-image"></i> </a>`
                 }

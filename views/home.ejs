@@ -1,3 +1,44 @@
-<%- include('template/header', {tituloweb: 'Inicio EJS'}); %>
+<%- include('template/header', {tituloweb: 'Inicio'}); %>
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-5 align-self-center">
+            <h4 class="page-title">Inicio</h4>
+            <div class="d-flex align-items-center">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/home">Inicio</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center w-100 justify-between">
+                        <div>
+                            <h4 class="card-title">Resumen de Ventas</h4>
+                            <h5 class="card-subtitle">Descripción general del mes de <span class="mesAnalisis">Enero-2023</span></h5>
+                        </div>
+                        <div class="ms-auto d-flex no-block align-items-center">
+                            <div class="dl">
+                                <select class="form-control">
+                                    <option value="01" selected="">Enero</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="morris-line-chart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script src="/assets/template/assets/libs/raphael/raphael.min.js"></script>
+<script src="/assets/template/assets/libs/morris.js/morris.min.js"></script>
+<script src="/assets/js/inicio.js"></script>
 <%- include('template/footer'); %>

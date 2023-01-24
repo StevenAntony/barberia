@@ -139,7 +139,7 @@ $(document).ready(function () {
                     return index.row;
                 }
             },
-            {className:'text-center hide-xs',orderable:false,data:'Cliente.cliente',defaultContent: ''},
+            {className:'text-center',orderable:false,data:'Cliente.cliente',defaultContent: ''},
             {className:'text-center hide-xs',orderable:false,data:'Corte',defaultContent: ''},
             {className:'text-center hide-xs',orderable:false,data:'Usuario.Nombre',defaultContent: ''},
             {className:'text-center hide-xs',orderable:false,data:'Pago',defaultContent: ''},

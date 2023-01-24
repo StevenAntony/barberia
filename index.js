@@ -62,15 +62,14 @@ app.use('/caja', require('./routes/caja'));
 app.use('/corte', require('./routes/corte'));
 app.use('/usuario', require('./routes/usuario'));
 app.use('/auth', require('./routes/auth'));
+app.use('/analisis', require('./routes/analisis/ingreso.js'));
 
 app.get('/', (req, res) => {
     console.log(process.env.APP_ENV);
-    // res.render("login", { nameApp: process.env.NAME_APP });
     res.redirect('/auth/signin');
 });
 
-app.get('/home',isAuthenticated, (req, res, next) => {
-    
+app.get('/home',isAuthenticated, (req, res, next) => {   
     res.render('home',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
 });
 
