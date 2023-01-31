@@ -64,6 +64,9 @@ app.use('/usuario', require('./routes/usuario'));
 app.use('/auth', require('./routes/auth'));
 app.use('/analisis', require('./routes/analisis/ingreso.js'));
 
+// Apis de la barberia
+app.use('/api/v1/auth',require('./routes/api/v1/auth.js'));
+
 app.get('/', (req, res) => {
     console.log(process.env.APP_ENV);
     res.redirect('/auth/signin');

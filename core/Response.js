@@ -7,6 +7,7 @@ class Response {
             result: 0,
             total: 0
         };
+        this.message = "";
         this.data = [];
         this.errorStatus = 0;
         this.errorType = "";
@@ -28,10 +29,16 @@ class Response {
         this.errorType = type;
     }
 
+    setMessage (message = ""){
+        this.message = message;
+    }
+    
+
     get result(){
         return {    
             success: this.success,    
             // paging: this.paging,
+            message: this.message,
             data: this.data,
             error: {
                 status: this.errorStatus,
