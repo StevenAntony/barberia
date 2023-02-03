@@ -12,6 +12,9 @@ class Response {
         this.errorStatus = 0;
         this.errorType = "";
         this.errorMessage = "";
+        this.headers = {
+            'auth-token' : ""
+        }
     }
 
     setSuccess (success = false){
@@ -31,6 +34,10 @@ class Response {
 
     setMessage (message = ""){
         this.message = message;
+    }
+
+    setHeadersToken (token = ""){
+        this.headers['auth-token'] = token;       
     }
     
 
