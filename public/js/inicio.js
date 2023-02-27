@@ -1,12 +1,31 @@
-const cargarResumenMes = async () => {
+const meses = Array.from({ length: 12 }, (_, i) =>
+        (new Intl.DateTimeFormat('es-ES', { month: 'long' }).format(new Date(2022, i, 1))).toUpperCase()
+    );
+
+const cargarMeses = () => {
+  $('#mesConsultar').html(meses.map((mes, indice) => `<option value="${indice+1}">${mes}</option>`).join(''))
+}
+
+$('#mesConsultar').change(function (){
+  cargarResumenMes($(this).val(), new Date().getFullYear())
+})
+
+$(document).ready(function () {
+  cargarMeses()
+  $('#mesConsultar').val(new Date().getMonth()+1)
+  cargarResumenMes($('#mesConsultar').val(), new Date().getFullYear());
+});
+
+const cargarResumenMes = async (mes, year) => {
+  
   let headersList = {
     "Accept": "*/*",
     "Content-Type": "application/json"
   }
 
   let bodyContent = JSON.stringify({
-    mes: 1,
-    year: 2023
+    mes: mes,
+    year: year
   });
 
   let response = await fetch("/analisis/resumen-mes/atencion", {
@@ -16,6 +35,8 @@ const cargarResumenMes = async () => {
   });
 
   let data = await response.json();
+
+  $('.mesAnalisis').html(`${meses[mes-1]}-${year}`);
   let itemChart = [];
   data.data.forEach(element => {
     itemChart.push({
@@ -23,7 +44,8 @@ const cargarResumenMes = async () => {
       item: element.Total
     });
   });
-  console.log(itemChart);
+
+  $('#morris-line-chart').html('');
   let line = new Morris.Line({
     element: "morris-line-chart",
     resize: true,
@@ -37,7 +59,4 @@ const cargarResumenMes = async () => {
     lineWidth: 2,
     hideHover: "auto",
   });
-  console.log(data);
 }
-
-cargarResumenMes();

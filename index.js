@@ -63,6 +63,7 @@ app.use('/corte', require('./routes/corte'));
 app.use('/usuario', require('./routes/usuario'));
 app.use('/auth', require('./routes/auth'));
 app.use('/analisis', require('./routes/analisis/ingreso.js'));
+app.use('/producto', require('./routes/producto.js'));
 
 // Apis de la barberia
 app.use('/api/v1/auth',require('./routes/api/v1/auth.js'));
