@@ -2,14 +2,15 @@ const express = require('express');
 const Caja = require('../models/Caja');
 const Atencion = require('../models/Atencion');
 const Response = require('../core/Response');
+const verificarToken = require('../middlewares/VerificaToken');
 
 const router = express.Router();
 
-router.get('/',isAuthenticated, (req, res, next) => {
-    res.render('mantenimiento/caja',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
+router.get('/', (req, res, next) => {
+    res.render('mantenimiento/caja',{ nameApp: process.env.NAME_APP });
 });
 
-router.post('/list',async (req, res) => {
+router.post('/list',verificarToken,async (req, res) => {
     const response = new Response();
     try {        
         const arrayData = await Caja.find().sort({ Apertura: -1 });
@@ -25,7 +26,7 @@ router.post('/list',async (req, res) => {
     }
 })
 
-router.post('/aperturar',async (req,res) => {
+router.post('/aperturar',verificarToken,async (req,res) => {
     const response = new Response();
     try {        
         const cerrarCaja = await Caja.findOneAndUpdate({ Estado: 'Aperturado' },
@@ -36,8 +37,8 @@ router.post('/aperturar',async (req,res) => {
         const cajaDB = new Caja({
             Apertura:Date.now(),
             Usuario:{
-                Nombre:req.user.Nombre,
-                Codigo:req.user._id,
+                Nombre:req.auth.name,
+                Codigo:req.auth.id,
             },
             Total:req.body.Inicia
         })
@@ -46,14 +47,15 @@ router.post('/aperturar',async (req,res) => {
         response.setSuccess(true);
         res.json(response.result);
     } catch (error) {
+        console.log(error);
         response.setData([]);
-        response.setError(error,500,'INTERNAL_ERROR');
+        response.setError(error.message,500,'INTERNAL_ERROR');
         response.setSuccess(false);
         res.json(response.result)
     }
 })
 
-router.post('/verificar',async (req,res) => {
+router.post('/verificar',verificarToken,async (req,res) => {
     const response = new Response();
     try {        
         const arrayData = await Caja.findOne({ Estado: 'Aperturado' });
@@ -68,7 +70,7 @@ router.post('/verificar',async (req,res) => {
     }
 })
 
-router.put('/cierre/:id',async (req,res) => {
+router.put('/cierre/:id',verificarToken,async (req,res) => {
     const response = new Response();
     
     try {        
@@ -96,7 +98,7 @@ router.put('/cierre/:id',async (req,res) => {
     }
 })
 
-router.put('/arqueo/:id',async (req,res) => {
+router.put('/arqueo/:id',verificarToken,async (req,res) => {
     const response = new Response();
     
     try {        
@@ -122,7 +124,7 @@ router.put('/arqueo/:id',async (req,res) => {
     }
 })
 
-router.post('/detallecaja/:id',async (req,res) => {
+router.post('/detallecaja/:id',verificarToken,async (req,res) => {
     const response = new Response();
     
     try {        
@@ -154,13 +156,5 @@ router.post('/detallecaja/:id',async (req,res) => {
         res.json(response.result)
     }
 })
-
-
-function isAuthenticated(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/auth/signin')
-}
 
 module.exports = router;

@@ -22,13 +22,13 @@ const singIn = async(users, password) => {
         const token = jwt.sign({
             name: user.Nombre,
             id: user._id
-        }, process.env.TOKEN_SECRET)
-        console.log(token);
+        }, process.env.TOKEN_SECRET);
         response.setHeadersToken(token);
         response.setData({
             name: user.Nombre,
             id: user._id,
-            token: token
+            token: token,
+            url: process.env.APP_ENV == 'local' ? 'http://127.0.0.1:3000/' : process.env.BASE_URL
         });
         response.setSuccess(true);
         response.setMessage('Acceso conseguido');

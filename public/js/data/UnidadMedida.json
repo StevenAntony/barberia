@@ -1,0 +1,250 @@
+[
+    {
+        "id": "4A",
+        "text": "BOBINAS"
+    },
+    {
+        "id": "BJ",
+        "text": "BALDE"
+    },
+    {
+        "id": "BLL",
+        "text": "BARRILES"
+    },
+    {
+        "id": "BG",
+        "text": "BOLSA"
+    },
+    {
+        "id": "BO",
+        "text": "BOTELLAS"
+    },
+    {
+        "id": "BX",
+        "text": "CAJA"
+    },
+    {
+        "id": "CT",
+        "text": "CARTONES"
+    },
+    {
+        "id": "CMK",
+        "text": "CENTIMETRO CUADRADO"
+    },
+    {
+        "id": "CMQ",
+        "text": "CENTIMETRO CUBICO"
+    },
+    {
+        "id": "CMT",
+        "text": "CENTIMETRO LINEAL"
+    },
+    {
+        "id": "CEN",
+        "text": "CIENTO DE UNIDADES"
+    },
+    {
+        "id": "CY",
+        "text": "CILINDRO"
+    },
+    {
+        "id": "CJ",
+        "text": "CONOS"
+    },
+    {
+        "id": "DZN",
+        "text": "DOCENA"
+    },
+    {
+        "id": "DZP",
+        "text": "DOCENA POR 10**6"
+    },
+    {
+        "id": "BE",
+        "text": "FARDO"
+    },
+    {
+        "id": "GLI",
+        "text": "GALON INGLES (4,545956L)"
+    },
+    {
+        "id": "GRM",
+        "text": "GRAMO"
+    },
+    {
+        "id": "GRO",
+        "text": "GRUESA"
+    },
+    {
+        "id": "HLT",
+        "text": "HECTOLITRO"
+    },
+    {
+        "id": "LEF",
+        "text": "HOJA"
+    },
+    {
+        "id": "SET",
+        "text": "JUEGO"
+    },
+    {
+        "id": "KGM",
+        "text": "KILOGRAMO"
+    },
+    {
+        "id": "KTM",
+        "text": "KILOMETRO"
+    },
+    {
+        "id": "KWH",
+        "text": "KILOVATIO HORA"
+    },
+    {
+        "id": "KT",
+        "text": "KIT"
+    },
+    {
+        "id": "CA",
+        "text": "LATAS"
+    },
+    {
+        "id": "LBR",
+        "text": "LIBRAS"
+    },
+    {
+        "id": "LTR",
+        "text": "LITRO"
+    },
+    {
+        "id": "MWH",
+        "text": "MEGAWATT HORA"
+    },
+    {
+        "id": "MTR",
+        "text": "METRO"
+    },
+    {
+        "id": "MTK",
+        "text": "METRO CUADRADO"
+    },
+    {
+        "id": "MTQ",
+        "text": "METRO CUBICO"
+    },
+    {
+        "id": "MGM",
+        "text": "MILIGRAMOS"
+    },
+    {
+        "id": "MLT",
+        "text": "MILILITRO"
+    },
+    {
+        "id": "MMT",
+        "text": "MILIMETRO"
+    },
+    {
+        "id": "MMK",
+        "text": "MILIMETRO CUADRADO"
+    },
+    {
+        "id": "MMQ",
+        "text": "MILIMETRO CUBICO"
+    },
+    {
+        "id": "MIL",
+        "text": "MILLARES"
+    },
+    {
+        "id": "UM",
+        "text": "MILLON DE UNIDADES"
+    },
+    {
+        "id": "ONZ",
+        "text": "ONZAS"
+    },
+    {
+        "id": "PF",
+        "text": "PALETAStext"
+    },
+    {
+        "id": "PK",
+        "text": "PAQUETEtext"
+    },
+    {
+        "id": "PR",
+        "text": "PAR"
+    },
+    {
+        "id": "FOT",
+        "text": "PIES"
+    },
+    {
+        "id": "FTK",
+        "text": "PIES CUADRADOS"
+    },
+    {
+        "id": "FTQ",
+        "text": "PIES CUBICOS"
+    },
+    {
+        "id": "C62",
+        "text": "PIEZAS"
+    },
+    {
+        "id": "PG",
+        "text": "PLACAS"
+    },
+    {
+        "id": "ST",
+        "text": "PLIEGO"
+    },
+    {
+        "id": "INH",
+        "text": "PULGADAS"
+    },
+    {
+        "id": "RM",
+        "text": "RESMA"
+    },
+    {
+        "id": "DR",
+        "text": "TAMBOR"
+    },
+    {
+        "id": "STN",
+        "text": "TONELADA CORTA"
+    },
+    {
+        "id": "LTN",
+        "text": "TONELADA LARGA"
+    },
+    {
+        "id": "TNE",
+        "text": "TONELADAS"
+    },
+    {
+        "id": "TU",
+        "text": "TUBOS"
+    },
+    {
+        "id": "NIU",
+        "text": "UNIDAD (BIENES)"
+    },
+    {
+        "id": "ZZ",
+        "text": "UNIDAD (SERVICIOS)text"
+    },
+    {
+        "id": "GLL",
+        "text": "US GALON (3,7843 L)"
+    },
+    {
+        "id": "YRD",
+        "text": "YARDA"
+    },
+    {
+        "id": "YDK",
+        "text": "YARDA CUADRADAtext"
+    }
+]

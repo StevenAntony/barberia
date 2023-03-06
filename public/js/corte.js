@@ -1,3 +1,5 @@
+import { Config } from './../Config.js';
+
 var table
 var elementEditar = null
 var filaEditar = null
@@ -5,6 +7,8 @@ var accion = 'Nuevo'
 const idFormEnviar = $('#formEnviar')
 const btnEnviarForm = $('.btnEnviarForm')
 const btnAperturarModal = $('.btnAperturarModal')
+
+const config = new Config();
 
 /**
  * If the current month is less than the birth month, or if the current month is the same as the birth
@@ -33,6 +37,9 @@ btnEnviarForm.click(function () {
         type: accion == 'Nuevo' ? idFormEnviar.attr('method') : 'put',
         dataType: "json",
         url: accion == 'Nuevo' ? idFormEnviar.attr('action') : `/corte/update/${elementEditar._id}`,
+        headers:{
+            Authorization : `Bearer ${config.auth().token}`
+        },
         data: idFormEnviar.serialize(),
         success: function (response) {
             console.log(response); 
@@ -89,6 +96,9 @@ $(document).on('click','.cambiarEstado',function () {
         type: 'put',
         dataType: "json",
         url: `/corte/estado/${table.row(tr).data()._id}`,
+        headers:{
+            authorization : `Bearer ${config.auth().token}`
+        },
         data: {itmEstado:table.row(tr).data().Estado},
         success: function (response) {
             table.row(filaEditar).data(response.data).draw()
@@ -150,6 +160,9 @@ $(document).ready(function () {
         ajax: {
             url: '/corte/list',
             type:'post',
+            headers:{
+                Authorization : `Bearer ${config.auth().token}`
+            },
             dataSrc:  function(response) {        
                 if (response.success) {
                     return response.data

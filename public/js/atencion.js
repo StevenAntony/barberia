@@ -1,7 +1,11 @@
+import { Config } from './../Config.js';
+
 const btnEnviarForm = $('.btnEnviarForm ')
 var table = null
 var ClienteSelect = null
 var filaEditar = null
+
+const config = new Config();
 
 /**
  * Envio del formulario para la creacion de un nueva atencion mediante api 
@@ -9,17 +13,13 @@ var filaEditar = null
  * @param {*} data - de tipo objeto
  */
 const enviarFormulario = async (data) => {
-    let headersList = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-       }
-       
+    
     let bodyContent = JSON.stringify(data);
        
     let response = await fetch('/atencion/create', { 
         method: "POST",
         body: bodyContent,
-        headers: headersList
+        headers: config.headers()
     });
     
     let result = await response.json();
@@ -70,14 +70,10 @@ $('#itmCliente').on('select2:select', function (e) {
  * Cargar los cortes mediante una api utilizando fetch
  */
 const cargarCorte =async () => {
-    let headersList = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-       }
 
     let response = await fetch("/corte/list", { 
         method: "POST",
-        headers: headersList
+        headers: config.headers()
     });
     
     let data = await response.json();
@@ -106,6 +102,7 @@ $(document).ready(function () {
         ajax: {
             url: '/atencion/list',
             type:'post',
+            headers: config.headers(),
             dataSrc:  function(response) {        
                 if (response.success) {
                     return response.data
@@ -178,6 +175,9 @@ $(document).ready(function () {
             url: "/cliente/buscar",
             method:"post",
             dataType: 'json',
+            headers: {
+                authorization: `Bearer ${JSON.parse(localStorage.getItem('auth')).token}`
+            },
             delay: 250,
             data: function(params) {
                 return {
@@ -249,6 +249,9 @@ $(document).on('click','.cambiarEstado',function () {
     $.ajax({
         type: 'put',
         dataType: "json",
+        headers: {
+            authorization: `Bearer ${JSON.parse(localStorage.getItem('auth')).token}`
+        },
         url: `/atencion/estado/${table.row(tr).data()._id}`,
         data: {itmEstado:table.row(tr).data().Estado},
         success: function (response) {

@@ -1,9 +1,13 @@
+import { Config } from './../Config.js';
+
 var table
 var elementEditar = null
 var filaEditar = null
 const idFormEnviar = $('#formEnviar')
 const btnEnviarForm = $('.btnEnviarForm')
 const btnAperturarModal = $('.btnAperturarModal')
+
+const config = new Config();
 
 var moneda = {
     B200: 0, B100:0, B50:0, B20:0, B10:0,
@@ -30,9 +34,11 @@ btnEnviarForm.click(function () {
         type: idFormEnviar.attr('method') ,
         dataType: "json",
         url: idFormEnviar.attr('action'),
+        headers: {
+            authorization: `Bearer ${config.auth().token}`
+        },
         data: idFormEnviar.serialize(),
         success: function (response) {
-            console.log(response); 
             swal({   
                 title: "Formulario",   
                 text: "Fue enviado correctamente",   
@@ -62,14 +68,10 @@ btnEnviarForm.click(function () {
  * 
  */
 const verificarAperturada =async () => {
-    let headersList = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-       }
-    
+
     let response = await fetch("/caja/verificar", { 
         method: "POST",
-        headers: headersList
+        headers: config.headers()
     });
   
     let data = await response.json();
@@ -92,14 +94,10 @@ const verificarAperturada =async () => {
 }
 
 const cerrarCaja = async (id) => {
-    let headersList = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-       }
     
     let response = await fetch(`/caja/cierre/${id}`, { 
         method: "PUT",
-        headers: headersList
+        headers: config.headers()
     });
   
     let data = await response.json();
@@ -118,14 +116,10 @@ const cerrarCaja = async (id) => {
 }
 
 const detalleCaja = async (id) => {
-    let headersList = {
-        "Accept": "*/*",
-        "Content-Type": "application/json"
-       }
     
     let response = await fetch(`/caja/detallecaja/${id}`, { 
         method: "POST",
-        headers: headersList
+        headers: config.headers()
     });
   
     let data = await response.json();
@@ -223,7 +217,7 @@ $(document).ready(function () {
     table = $("#dataTableInfo").DataTable({
         // scrollY: "400px",
         paging: true,
-        order: [[ 1, "desc" ]],
+        order: false,
         deferRender: true,
         responsive: true,
         pageLength: 10,
@@ -233,6 +227,9 @@ $(document).ready(function () {
         ajax: {
             url: '/caja/list',
             type:'post',
+            headers: {
+                authorization : `Bearer ${config.auth().token}`
+            },
             dataSrc:  function(response) {        
                 if (response.success) {
                     return response.data
@@ -255,7 +252,7 @@ $(document).ready(function () {
                     return `<button type="button" class="btn-info btn" style="font-size: 12px;padding: 2px 5px;"><i class="fa fa-plus"></i></button>`;
                 }
             },
-            {className:'text-center ',orderable:true,data:'Apertura',defaultContent: '',
+            {className:'text-center ',orderable:false,data:'Apertura',defaultContent: '',
                 render: function (data, type, row, index) { 
                     return moment(row.Apertura).format('DD/MM/YYYY h:mm a')
                 }

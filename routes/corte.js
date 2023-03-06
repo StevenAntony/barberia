@@ -1,14 +1,15 @@
 const express = require('express');
 const Corte = require('../models/Corte');
 const Response = require('../core/Response');
+const verificarToken = require('../middlewares/VerificaToken');
 
 const router = express.Router();
 
-router.get('/',isAuthenticated , (req, res) => {
-    res.render('mantenimiento/corte',{ nameApp: process.env.NAME_APP,userAuth:req.user });
+router.get('/', (req, res) => {
+    res.render('mantenimiento/corte',{ nameApp: process.env.NAME_APP });
 })
 
-router.post('/list',async (req, res) => {
+router.post('/list',verificarToken,async (req, res) => {
     const response = new Response();
     try {        
         const arrayCorte = await Corte.find();
@@ -24,7 +25,7 @@ router.post('/list',async (req, res) => {
 })
 
 
-router.post('/create',async (req, res) => {
+router.post('/create',verificarToken, async (req, res) => {
     const response = new Response();
     try {
         const corteDB = new Corte({
@@ -45,7 +46,7 @@ router.post('/create',async (req, res) => {
     }
 })
 
-router.put('/update/:id',async (req, res) => {
+router.put('/update/:id',verificarToken,async (req, res) => {
     const response = new Response();
     const id = req.params.id;
     const body = {
@@ -70,7 +71,7 @@ router.put('/update/:id',async (req, res) => {
     }
 })
 
-router.put('/estado/:id',async (req, res) => {
+router.put('/estado/:id',verificarToken,async (req, res) => {
     const response = new Response();
     const id = req.params.id;
     const body = {
@@ -92,12 +93,6 @@ router.put('/estado/:id',async (req, res) => {
     }
 })
 
-function isAuthenticated(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/auth/signin')
-}
 
 
 module.exports = router;

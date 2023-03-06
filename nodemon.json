@@ -4,7 +4,9 @@
     ],
     "ext": "js,mjs,json",
     "ignore": [
-      "/public/js/*.js"
+      "/public/js/*.js",
+      "/plugin/*.js",
+      "/public/*.js"
     ],
     "delay": "1",
     "execMap": {

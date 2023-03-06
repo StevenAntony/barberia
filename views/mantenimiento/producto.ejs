@@ -44,7 +44,7 @@
                 <div class="modal-body">
                     <form novalidate action="/corte/create" method="post" id="formEnviar">
                         <div class="d-flex flex-wrap">
-                            <div class="col-md-4 d-flex flex-wrap">
+                            <div class="col-md-4 d-flex flex-wrap" style="height: fit-content;">
                                 <div class="form-group col-12">
                                     <h5>Nombre <span class="text-danger">*</span></h5>
                                     <div class="controls">
@@ -74,35 +74,42 @@
                                 <div class="form-group col-sm-4 col-6">
                                     <h5>Unidad</h5>
                                     <div class="controls">
-                                        <input type="text" id="itmUnidad" class="form-control" autocomplete="off"> 
+                                        <style>
+                                            .select2{
+                                                width: 100%!important;
+                                            }
+                                        </style>
+                                        <select name="" class="form-control" id="itmUnidad">
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4 col-6">
                                     <h5>Precio</h5>
                                     <div class="controls">
-                                        <input type="number" id="itmPrecio" class="form-control" autocomplete="off"> 
+                                        <input type="number" id="itmPrecio" class="form-control" value="0.00" autocomplete="off"> 
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4 col-6">
                                     <h5>Costo</h5>
                                     <div class="controls">
-                                        <input type="number" id="itmCosto" class="form-control" autocomplete="off"> 
+                                        <input type="number" id="itmCosto" class="form-control" value="0.00" autocomplete="off"> 
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4 col-6">
                                     <h5>Stock</h5>
                                     <div class="controls">
-                                        <input type="number" id="itmStock" class="form-control" autocomplete="off"> 
+                                        <input type="number" id="itmStock" class="form-control" value="0.00" autocomplete="off"> 
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4 col-6">
                                     <h5>Descontar</h5>
                                     <div class="controls">
-                                        <input type="number" id="itmDescontar" class="form-control" autocomplete="off"> 
+                                        <input type="number" id="itmDescontar" value="0.00" class="form-control" autocomplete="off"> 
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4 col-6">
-                                    <button class="btn btn-info w-100" style="margin-top: 28px;" type="button"><i class="fa fa-plus"></i> Presentación</button>
+                                    <button class="btn btn-info w-100 btnAddPresentacion" style="margin-top: 28px;" type="button"><i class="fa fa-plus"></i> Presentación</button>
                                 </div>
                                 <div class="col-12">
                                     <table class="table">
@@ -116,6 +123,9 @@
                                                 <th>Opción</th>
                                             </tr>
                                         </thead>
+                                        <tbody id="table-presentacion">
+
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -129,5 +139,5 @@
             </div>
         </div>
     </div>
-<script async src="/assets/js/producto.js"></script>
+<script async type="module" src="/assets/js/producto.js"></script>
 <%- include('../template/footer'); %>

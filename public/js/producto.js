@@ -1,3 +1,40 @@
+import { money, uuidv4 } from './../plugin/Tools.js';
+
+var listaPresentacion = []
+
+class Presentacion {
+    constructor(unidad, precio, costo, stock, descontar) {
+        this.id = uuidv4();
+        this.unidad = unidad;
+        this.precio = precio;
+        this.costo  = costo;
+        this.stock  = stock;
+        this.descontar= descontar;
+    }
+
+    add(){
+        listaPresentacion.push(this)
+        return this;
+    }
+
+    renderTable(){
+        let htmlRender = '';
+        listaPresentacion.forEach(element => {
+        htmlRender += `<tr>
+                        <td>${element.unidad}</td>
+                        <td>${money(element.precio)}</td>
+                        <td>${money(element.costo)}</td>
+                        <td><span class="badge ${element.stock > 0 ? 'bg-success' : 'bg-danger'}">${element.stock.toFixed(2)}</span></td>
+                        <td>${element.descontar.toFixed(2)}</td>
+                        <td><button type="button" class="btn-danger btn btnEliminarPresentacion" 
+                                    style="font-size: 12px;padding: 2px 5px;"><i class="fa fa-trash"></i></button></td>
+                    </tr>`;
+        let tablePresentacion = document.getElementById('table-presentacion')
+        tablePresentacion.innerHTML = htmlRender;
+    });
+    }
+}
+
 var table
 var elementEditar = null
 var filaEditar = null
@@ -6,6 +43,11 @@ const idFormEnviar = $('#formEnviar')
 const btnEnviarForm = $('.btnEnviarForm')
 const btnAperturarModal = $('.btnAperturarModal')
 
+const itmUnidad = document.getElementById('itmUnidad');
+const itmPrecio = document.getElementById('itmPrecio');
+const itmCosto = document.getElementById('itmCosto');
+const itmStock = document.getElementById('itmStock');
+const itmDescontar = document.getElementById('itmDescontar');
 
 /**
  * 
@@ -200,4 +242,26 @@ $(document).ready(function () {
             url: 'assets/template/language.json'
         }
       });
+
+    const dataUnidad = fetch('assets/js/data/UnidadMedida.json')
+    .then(response => response.json())
+    .then(data => {
+        $("#itmUnidad").select2({
+            data: data,
+            dropdownParent: $('.modalForm')
+        });
+    });
+});
+
+const btnAddPresentacion = document.getElementsByClassName('btnAddPresentacion')[0]
+
+btnAddPresentacion.addEventListener('click', function (){
+    console.log(itmStock);
+    let obj = new Presentacion(itmUnidad.value,itmPrecio.value,itmCosto.value,itmStock.value,itmDescontar.value);
+    obj.add().renderTable();
+
+    itmPrecio.value = '0.00';
+    itmCosto.value = '0.00';
+    itmStock.value = '0.00';
+    itmDescontar.value = '0.00'
 });

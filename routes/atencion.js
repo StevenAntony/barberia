@@ -2,15 +2,16 @@ const express = require('express');
 const Atencion = require('../models/Atencion');
 const Caja = require('../models/Caja');
 const Response = require('../core/Response');
+const verificarToken = require('../middlewares/VerificaToken');
 
 const router = express.Router();
 
-router.get('/',isAuthenticated, (req, res, next) => {
+router.get('/', (req, res, next) => {
 
-    res.render('mantenimiento/atencion',{ nameApp: process.env.NAME_APP,userAuth:req.user  });
+    res.render('mantenimiento/atencion',{ nameApp: process.env.NAME_APP });
 });
 
-router.post('/list',async (req, res) => {
+router.post('/list',verificarToken,async (req, res) => {
     const response = new Response();
     try {        
         const arrayData = await Atencion.find();
@@ -25,18 +26,17 @@ router.post('/list',async (req, res) => {
     }
 })
 
-router.post('/create',async (req, res) => {
+router.post('/create',verificarToken,async (req, res) => {
     const response = new Response();
     try {        
-        // console.log(req.body);
         const cajaDB = await Caja.findOne({ Estado: 'Aperturado' })
         if (cajaDB != null) {
             const atencionDB = new Atencion({
                 Cliente:req.body.itmCliente,
                 Corte:req.body.itmCorte,
                 Usuario:{
-                    Nombre:req.user.Nombre,
-                    Codigo:req.user._id,
+                    Nombre:req.auth.name,
+                    Codigo:req.auth.id,
                 },
                 Monto:req.body.itmMonto,
                 Adicional:req.body.itmAdicional,
@@ -56,13 +56,13 @@ router.post('/create',async (req, res) => {
     } catch (error) {
         console.log(error);
         response.setData([]);
-        response.setError('Error Servidor',500,'INTERNAL_ERROR');
+        response.setError(error.message,500,'INTERNAL_ERROR');
         response.setSuccess(false);
         res.json(response.result)
     }
 })
 
-router.put('/estado/:id',async (req, res) => {
+router.put('/estado/:id',verificarToken,async (req, res) => {
     const response = new Response();
     const id = req.params.id;
     const body = {
@@ -84,11 +84,5 @@ router.put('/estado/:id',async (req, res) => {
     }
 })
 
-function isAuthenticated(req, res, next) {
-    if(req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/auth/signin')
-}
 
 module.exports = router;
